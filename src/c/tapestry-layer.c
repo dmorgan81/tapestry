@@ -20,7 +20,7 @@ static void prv_update_proc(Layer *this, GContext *ctx) {
         }
     };
     GPath *gpath = gpath_create(&gpath_info);
-    graphics_context_set_fill_color(ctx, colors_get_tapestry_color());
+    graphics_context_set_fill_color(ctx, colors_get_foreground_color());
     gpath_draw_filled(ctx, gpath);
     gpath_destroy(gpath);
 
