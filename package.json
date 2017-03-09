@@ -2,9 +2,14 @@
   "name": "tapestry",
   "author": "David Morgan",
   "version": "1.0.0",
-  "keywords": ["pebble-app"],
+  "keywords": [
+    "pebble-app"
+  ],
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "pebble-events": "^1.2.0",
+    "pebble-fctx": "^1.6.2"
+  },
   "pebble": {
     "displayName": "Tapestry",
     "uuid": "09714229-09c5-4872-a65f-3678f0006946",
@@ -21,7 +26,16 @@
     },
     "messageKeys": [],
     "resources": {
-      "media": []
+      "media": [
+        {
+          "type": "raw",
+          "name": "LECO_FFONT",
+          "file": "LECO1976-Regular.ffont"
+        }
+      ]
     }
+  },
+  "devDependencies": {
+    "pebble-fctx-compiler": "^1.2.2"
   }
 }
