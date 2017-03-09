@@ -24,7 +24,7 @@ static void prv_update_proc(Layer *this, GContext *ctx) {
     fctx_init_context(&fctx, ctx);
     fctx_set_offset(&fctx, fpoint_add(origin, FPointI(frame.origin.x + frame.size.w, frame.origin.y)));
     fctx_set_fill_color(&fctx, colors_get_text_color());
-    fctx_set_text_em_height(&fctx, data->font, 58);
+    fctx_set_text_em_height(&fctx, data->font, PBL_IF_RECT_ELSE(58, 56));
 
     char s[3];
     strftime(s, sizeof(s), clock_is_24h_style() ? "%H" : "%I", &data->tick_time);

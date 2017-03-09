@@ -29,10 +29,10 @@ static void prv_update_proc(Layer *this, GContext *ctx) {
     fctx_init_context(&fctx, ctx);
     fctx_set_offset(&fctx, fpoint_add(origin, FPointI(frame.origin.x + (frame.size.w / 2), frame.origin.y)));
     fctx_set_fill_color(&fctx, colors_get_text_color());
-    fctx_set_text_em_height(&fctx, data->font, PBL_IF_ROUND_ELSE(12, 14));
+    fctx_set_text_em_height(&fctx, data->font, PBL_IF_RECT_ELSE(14, 16));
 
     char s[16];
-    strftime(s, sizeof(s), "%a %b %d", &data->tick_time);
+    strftime(s, sizeof(s), PBL_IF_RECT_ELSE("%a %b %d", "%b %d"), &data->tick_time);
     strupp(s);
 
     fctx_begin_fill(&fctx);
