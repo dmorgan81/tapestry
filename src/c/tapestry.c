@@ -14,29 +14,32 @@ static BannerLayer *s_banner_layer;
 static DateLayer *s_date_layer;
 
 static EventHandle s_accel_tap_event_handle;
-static AppTimer *s_app_timer;
+static bool s_animated = false;
 
-static void prv_app_timer_callback(void *context) {
+static void prv_animation_stopped(Animation *animation, bool finished, void *context) {
     log_func();
-    s_app_timer = NULL;
-
-    GRect from = layer_get_frame(s_tapestry_layer);
-    uint8_t h = from.size.h / 3;
-    GRect to = GRect(from.origin.x, from.origin.y - h, from.size.w, from.size.h);
-    PropertyAnimation *animation = property_animation_create_layer_frame(s_tapestry_layer, &from, &to);
-    animation_schedule(property_animation_get_animation(animation));
+    s_animated = false;
 }
 
 static void prv_accel_tap_handler(AccelAxisType axis, int32_t direction) {
     log_func();
-    if (s_app_timer) return;
-    s_app_timer = app_timer_register(5000, prv_app_timer_callback, NULL);
+    if (s_animated) return;
+    s_animated = true;
 
     GRect from = layer_get_frame(s_tapestry_layer);
     uint8_t h = from.size.h / 3;
     GRect to = GRect(from.origin.x, from.origin.y + h, from.size.w, from.size.h);
     PropertyAnimation *animation = property_animation_create_layer_frame(s_tapestry_layer, &from, &to);
-    animation_schedule(property_animation_get_animation(animation));
+
+    Animation *clone = animation_clone(property_animation_get_animation(animation));
+    animation_set_reverse(clone, true);
+    animation_set_delay(clone, 5000);
+
+    Animation *sequence = animation_sequence_create(property_animation_get_animation(animation), clone, NULL);
+    animation_set_handlers(sequence, (AnimationHandlers) {
+        .stopped = prv_animation_stopped
+    }, NULL);
+    animation_schedule(sequence);
 }
 
 static void prv_window_load(Window *window) {
@@ -75,6 +78,8 @@ static void prv_window_load(Window *window) {
 
 static void prv_window_unload(Window *window) {
     log_func();
+    events_accel_tap_service_unsubscribe(s_accel_tap_event_handle);
+
     date_layer_destroy(s_date_layer);
     banner_layer_destroy(s_banner_layer);
     time_layer_destroy(s_time_layer);
