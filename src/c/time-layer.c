@@ -28,18 +28,26 @@ static void prv_update_proc(Layer *this, GContext *ctx) {
     fctx_set_text_em_height(&fctx, data->font, PBL_IF_RECT_ELSE(58, 56));
 
     char s[3];
+#ifndef DEMO
     if (enamel_get_LEADING_ZERO()) {
         strftime(s, sizeof(s), clock_is_24h_style() ? "%H" : "%I", &data->tick_time);
     } else {
         strftime(s, sizeof(s), clock_is_24h_style() ? "%k" : "%l", &data->tick_time);
     }
+#else
+    snprintf(s, sizeof(s), "12");
+#endif
 
     fctx_begin_fill(&fctx);
     fctx_draw_string(&fctx, s, data->font, GTextAlignmentRight, FTextAnchorTop);
     fctx_end_fill(&fctx);
 
     fctx_set_offset(&fctx, fpoint_add(origin, FPointI(frame.origin.x + frame.size.w, frame.origin.y + frame.size.h)));
+#ifndef DEMO
     strftime(s, sizeof(s), "%M", &data->tick_time);
+#else
+    snprintf(s, sizeof(s), "34");
+#endif
 
     fctx_begin_fill(&fctx);
     fctx_draw_string(&fctx, s, data->font, GTextAlignmentRight, FTextAnchorBottom);
