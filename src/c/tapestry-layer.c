@@ -3,7 +3,7 @@
 #include "colors.h"
 #include "tapestry-layer.h"
 
-static const GPoint BORDER_WIDTH = { .x = 3, .y = 4 };
+static const GPoint BORDER_WIDTH = { .x = 3, .y = 3 };
 
 static void prv_update_proc(Layer *this, GContext *ctx) {
     log_func();
@@ -14,7 +14,7 @@ static void prv_update_proc(Layer *this, GContext *ctx) {
         .points = (GPoint[]) {
             {0, 0},
             {0, bounds.size.h},
-            {bounds.size.w / 2, bounds.size.h - (bounds.size.h / 12)},
+            {bounds.size.w / 2, bounds.size.h - (bounds.size.h / 16)},
             {bounds.size.w, bounds.size.h},
             {bounds.size.w, 0}
         }
