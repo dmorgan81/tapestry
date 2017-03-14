@@ -3,6 +3,7 @@
 #include <pebble-fctx/fctx.h>
 #include <pebble-fctx/ffont.h>
 #include "logging.h"
+#include "enamel.h"
 #include "colors.h"
 #include "time-layer.h"
 
@@ -27,7 +28,11 @@ static void prv_update_proc(Layer *this, GContext *ctx) {
     fctx_set_text_em_height(&fctx, data->font, PBL_IF_RECT_ELSE(58, 56));
 
     char s[3];
-    strftime(s, sizeof(s), clock_is_24h_style() ? "%H" : "%I", &data->tick_time);
+    if (enamel_get_LEADING_ZERO()) {
+        strftime(s, sizeof(s), clock_is_24h_style() ? "%H" : "%I", &data->tick_time);
+    } else {
+        strftime(s, sizeof(s), clock_is_24h_style() ? "%k" : "%l", &data->tick_time);
+    }
 
     fctx_begin_fill(&fctx);
     fctx_draw_string(&fctx, s, data->font, GTextAlignmentRight, FTextAnchorTop);

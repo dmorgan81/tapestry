@@ -7,8 +7,11 @@
   ],
   "private": true,
   "dependencies": {
+    "enamel": "^1.2.5",
+    "pebble-connection-vibes": "^1.1.0",
     "pebble-events": "^1.2.0",
-    "pebble-fctx": "^1.6.2"
+    "pebble-fctx": "^1.6.2",
+    "pebble-hourly-vibes": "^1.1.0"
   },
   "pebble": {
     "displayName": "Tapestry",
@@ -24,7 +27,15 @@
     "watchapp": {
       "watchface": true
     },
-    "messageKeys": [],
+    "messageKeys": [
+      "LEADING_ZERO",
+      "CONNECTION_VIBE",
+      "ENABLE_HEALTH",
+      "COLOR_INVERT",
+      "HOURLY_VIBE",
+      "COLOR_BACKGROUND",
+      "COLOR_FOREGROUND"
+    ],
     "resources": {
       "media": [
         {

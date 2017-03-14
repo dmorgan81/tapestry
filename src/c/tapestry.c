@@ -1,5 +1,7 @@
 #include <pebble.h>
 #include <pebble-events/pebble-events.h>
+#include <pebble-connection-vibes/connection-vibes.h>
+#include <pebble-hourly-vibes/hourly-vibes.h>
 #include "logging.h"
 #include "colors.h"
 #include "tapestry-layer.h"
@@ -19,6 +21,21 @@ static DateLayer *s_date_layer;
 
 static EventHandle s_accel_tap_event_handle;
 static bool s_animated = false;
+
+static EventHandle s_settings_event_handle;
+
+static void prv_settings_handler(void *context) {
+    log_func();
+    window_set_background_color(s_window, colors_get_background_color());
+    connection_vibes_set_state(atoi(enamel_get_CONNECTION_VIBE()));
+    hourly_vibes_set_enabled(enamel_get_HOURLY_VIBE());
+#ifdef PBL_HEALTH
+    connection_vibes_enable_health(enamel_get_ENABLE_HEALTH());
+    hourly_vibes_enable_health(enamel_get_ENABLE_HEALTH());
+#endif
+
+    layer_mark_dirty(window_get_root_layer(s_window));
+}
 
 static void prv_animation_stopped(Animation *animation, bool finished, void *context) {
     log_func();
@@ -81,13 +98,15 @@ static void prv_window_load(Window *window) {
     layer_add_child(root_layer, s_banner_layer);
     layer_add_child(root_layer, s_tapestry_layer);
 
-    window_set_background_color(window, colors_get_background_color());
-
     s_accel_tap_event_handle = events_accel_tap_service_subscribe(prv_accel_tap_handler);
+
+    prv_settings_handler(NULL);
+    s_settings_event_handle = enamel_settings_received_subscribe(prv_settings_handler, NULL);
 }
 
 static void prv_window_unload(Window *window) {
     log_func();
+    enamel_settings_received_unsubscribe(s_settings_event_handle);
     events_accel_tap_service_unsubscribe(s_accel_tap_event_handle);
 
     date_layer_destroy(s_date_layer);
@@ -100,6 +119,17 @@ static void prv_window_unload(Window *window) {
 
 static void prv_init(void) {
     log_func();
+    enamel_init();
+    connection_vibes_init();
+    hourly_vibes_init();
+    uint32_t const pattern[] = { 100 };
+    hourly_vibes_set_pattern((VibePattern) {
+        .durations = pattern,
+        .num_segments = 1
+    });
+
+    events_app_message_open();
+
     s_window = window_create();
     window_set_window_handlers(s_window, (WindowHandlers) {
         .load = prv_window_load,
@@ -111,6 +141,10 @@ static void prv_init(void) {
 static void prv_deinit(void) {
     log_func();
     window_destroy(s_window);
+
+    hourly_vibes_deinit();
+    connection_vibes_deinit();
+    enamel_deinit();
 }
 
 int main(void) {
