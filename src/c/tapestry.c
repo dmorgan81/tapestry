@@ -5,6 +5,7 @@
 #include "tapestry-layer.h"
 #include "time-layer.h"
 #include "battery-layer.h"
+#include "status-layer.h"
 #include "banner-layer.h"
 #include "date-layer.h"
 
@@ -12,6 +13,7 @@ static Window *s_window;
 static TapestryLayer *s_tapestry_layer;
 static TimeLayer *s_time_layer;
 static BatteryLayer *s_battery_layer;
+static StatusLayer *s_status_layer;
 static BannerLayer *s_banner_layer;
 static DateLayer *s_date_layer;
 
@@ -62,6 +64,9 @@ static void prv_window_load(Window *window) {
     s_battery_layer = battery_layer_create(GRect(5, PBL_IF_RECT_ELSE(2, 8), frame.size.w - 10, 22));
     layer_add_child(s_tapestry_layer, s_battery_layer);
 
+    s_status_layer = status_layer_create(GRect(7, PBL_IF_RECT_ELSE(1, 4), frame.size.w - 14, 25));
+    layer_add_child(s_tapestry_layer, s_status_layer);
+
     h = bounds.size.h / 4;
     s_banner_layer = banner_layer_create(GRect(PBL_IF_RECT_ELSE(5, 30), bounds.size.h - h, bounds.size.w - PBL_IF_RECT_ELSE(10, 60), h - 10));
 #ifdef PBL_ROUND
@@ -87,6 +92,7 @@ static void prv_window_unload(Window *window) {
 
     date_layer_destroy(s_date_layer);
     banner_layer_destroy(s_banner_layer);
+    status_layer_destroy(s_status_layer);
     battery_layer_destroy(s_battery_layer);
     time_layer_destroy(s_time_layer);
     tapestry_layer_destroy(s_tapestry_layer);
