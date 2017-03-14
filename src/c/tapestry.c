@@ -66,7 +66,7 @@ static void prv_window_load(Window *window) {
 #endif
 
     bounds = layer_get_bounds(s_banner_layer);
-    s_date_layer = date_layer_create(GRect(0, 12, bounds.size.w, bounds.size.h - 24), s_banner_layer);
+    s_date_layer = date_layer_create(GRect(22, 12, bounds.size.w - 44, bounds.size.h - 24), s_banner_layer);
 
     layer_add_child(root_layer, s_banner_layer);
     layer_add_child(root_layer, s_tapestry_layer);
